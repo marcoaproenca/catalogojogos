@@ -3,7 +3,11 @@ package com.marcocorp.catalogojogos.controller;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.marcocorp.catalogojogos.dao.JogoDAO;
@@ -26,5 +30,24 @@ public class JogoController {
 		
 		lista = (ArrayList<Jogo>)dao.findAll();
 		return lista;
+	}
+	
+	@PostMapping("/novojogo")
+	public Jogo novoJogo(@RequestBody Jogo novo) {
+		dao.save(novo);
+		return novo;
+	}
+	@GetMapping("/jogo/{id}")
+	public ResponseEntity<Jogo> recuperarPorId(@PathVariable int id) {
+		
+		Jogo jogo = dao.findById(id).orElse(null);
+		
+		if(jogo != null) {
+			return ResponseEntity.ok(jogo);
+		}
+		else {
+			return ResponseEntity.notFound().build();
+		}
+			
 	}
 }
